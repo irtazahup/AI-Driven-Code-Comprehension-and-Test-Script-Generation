@@ -1,6 +1,19 @@
 import os
 from groq import Groq
 from dotenv import load_dotenv
+import re # Add this at the top
+
+def clean_ai_code(raw_code):
+    """Strips Markdown code blocks (```python ... ```) if they exist"""
+    # Regex to find content between ```python and ```
+    pattern = r"```(?:python)?\n?(.*?)\n?```"
+    match = re.search(pattern, raw_code, re.DOTALL)
+    if match:
+        return match.group(1).strip()
+    return raw_code.strip()
+
+# Update your generate function to use the cleaner
+
 
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
@@ -46,7 +59,8 @@ def generate_test_from_diff(diff_text):
         ],
         temperature=0.1
     )
-    return completion.choices[0].message.content
+    raw_content = completion.choices[0].message.content
+    return clean_ai_code(raw_content)
 # ... (rest of your code above remains same)
 
 if __name__ == "__main__":

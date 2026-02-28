@@ -7,3 +7,6 @@ pydantic
 google-generativeai
 faiss-cpu
 sentence-transformers
+
+groq
+python-dotenv
